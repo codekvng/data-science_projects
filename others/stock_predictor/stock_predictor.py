@@ -15,10 +15,10 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
 
 
-def get_data(symbol):
+def get_data(symbol, key):
 
     # Technical Indicators
-    ti = TechIndicators(key='4BTFICZGTPWZRRQS', output_format='pandas')
+    ti = TechIndicators(key=key, output_format='pandas')
     sma, _ = ti.get_sma(symbol=symbol, interval='daily')
     wma, _ = ti.get_wma(symbol='SPX', interval='daily')
     ema, _ = ti.get_ema(symbol=symbol, interval='daily')
@@ -35,7 +35,7 @@ def get_data(symbol):
     willr, _ = ti.get_willr(symbol='SPX', interval='daily')
     tech_ind = pd.concat([sma, ema, macd, stoch, rsi, adx, cci, aroon, bbands, ad, obv, wma, mom, willr], axis=1)
 
-    ts = TimeSeries(key='4BTFICZGTPWZRRQS', output_format='pandas')
+    ts = TimeSeries(key=key, output_format='pandas')
     close = ts.get_daily(symbol=symbol, outputsize='full')[0]['close']   # compact/full
     direction = (close > close.shift()).astype(int)
     target = direction.shift(-1).fillna(0).astype(int)
@@ -48,7 +48,7 @@ def get_data(symbol):
 
 def get_indicators(data, n):
 
-    hh = data['high'].rolling(n).max()
+    hh = data['2. high'].rolling(n).max()
     ll = data['low'].rolling(n).min()
     up, dw = data['close'].diff(), -data['close'].diff()
     up[up<0], dw[dw<0] = 0, 0
